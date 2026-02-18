@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { Search, Bell, PlusCircle, CheckCircle } from 'lucide-react';
+import { Search, Bell, PlusCircle, CheckCircle, Moon, Sun } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
-const Topbar = ({ title, onLogWaste, searchQuery, setSearchQuery }) => {
+const Topbar = ({ title, onLogWaste, searchQuery, setSearchQuery, theme, toggleTheme }) => {
     const [showNotifications, setShowNotifications] = useState(false);
 
     return (
@@ -20,6 +20,10 @@ const Topbar = ({ title, onLogWaste, searchQuery, setSearchQuery }) => {
                         onChange={(e) => setSearchQuery(e.target.value)}
                     />
                 </div>
+
+                <button className="icon-btn theme-toggle" onClick={toggleTheme} title="Toggle Dark Mode">
+                    {theme === 'light' ? <Moon size={20} /> : <Sun size={20} />}
+                </button>
 
                 <div className="notification-wrapper" style={{ position: 'relative' }}>
                     <button

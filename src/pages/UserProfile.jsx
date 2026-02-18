@@ -1,18 +1,31 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Camera, Edit2, Check, X } from 'lucide-react';
-import { db } from '../db/db';
+import { supabase } from '../lib/supabaseClient';
 
-const UserProfile = ({ user }) => {
+const UserProfile = ({ user, onNavigate }) => {
     const [isEditing, setIsEditing] = useState(false);
     const [formData, setFormData] = useState(user);
+    const [loading, setLoading] = useState(false);
 
     const handleSave = async () => {
-        await db.users.update(user.id, {
-            name: formData.name,
-            email: formData.email
-        });
-        setIsEditing(false);
+        try {
+            setLoading(true);
+            const { error } = await supabase
+                .from('profiles')
+                .update({
+                    name: formData.name,
+                    email: formData.email
+                })
+                .eq('id', user.id);
+            if (error) throw error;
+            setIsEditing(false);
+        } catch (err) {
+            console.error('Error updating profile:', err.message);
+            alert('Failed to update profile.');
+        } finally {
+            setLoading(false);
+        }
     };
 
     return (
@@ -57,22 +70,22 @@ const UserProfile = ({ user }) => {
                         <button className="text-btn" style={{ color: 'var(--text-soft)' }} onClick={() => setIsEditing(false)}>
                             <X size={18} /> Cancel
                         </button>
-                        <button className="btn-primary" onClick={handleSave}>
-                            <Check size={18} /> Save Changes
+                        <button className="btn-primary" onClick={handleSave} disabled={loading}>
+                            {loading ? 'Saving...' : <><Check size={18} /> Save Changes</>}
                         </button>
                     </div>
                 </motion.div>
             ) : (
                 <div className="stat-group">
-                    <div className="card stat-card">
+                    <div className="card stat-card" onClick={() => onNavigate?.('logs')} style={{ cursor: 'pointer' }}>
                         <p className="label">Total Recycled</p>
-                        <p className="value">{user.stats.totalWeight}kg</p>
+                        <p className="value">{user.total_weight || 0}kg</p>
                     </div>
-                    <div className="card stat-card">
+                    <div className="card stat-card" onClick={() => onNavigate?.('rewards')} style={{ cursor: 'pointer' }}>
                         <p className="label">Impact Points</p>
-                        <p className="value">{user.stats.points}</p>
+                        <p className="value">{user.eco_points || 0}</p>
                     </div>
-                    <div className="card stat-card">
+                    <div className="card stat-card" onClick={() => onNavigate?.('dashboard')} style={{ cursor: 'pointer' }}>
                         <p className="label">Monthly Rank</p>
                         <p className="value">#{Math.floor(Math.random() * 100) + 1}</p>
                     </div>

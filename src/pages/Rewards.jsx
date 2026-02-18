@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Award, Zap, Gift, CheckCircle } from 'lucide-react';
-import { db } from '../db/db';
+import { supabase } from '../lib/supabaseClient';
 
 const Rewards = ({ user }) => {
     const [showSuccess, setShowSuccess] = useState(false);
     const [redeemedItem, setRedeemedItem] = useState('');
+    const [loading, setLoading] = useState(false);
 
     const rewards = [
         { id: 1, title: 'Eco Starter', cost: 500, icon: Gift, description: 'Basic eco-friendly kit for your sustainable home' },
@@ -14,17 +15,27 @@ const Rewards = ({ user }) => {
     ];
 
     const handleRedeem = async (reward) => {
-        if (user.stats.points >= reward.cost) {
-            const updatedStats = {
-                ...user.stats,
-                points: user.stats.points - reward.cost
-            };
+        if ((user.eco_points || 0) >= reward.cost) {
+            try {
+                setLoading(true);
+                const { error } = await supabase
+                    .from('profiles')
+                    .update({
+                        eco_points: user.eco_points - reward.cost
+                    })
+                    .eq('id', user.id);
 
-            await db.users.update(user.id, { stats: updatedStats });
+                if (error) throw error;
 
-            setRedeemedItem(reward.title);
-            setShowSuccess(true);
-            setTimeout(() => setShowSuccess(false), 3000);
+                setRedeemedItem(reward.title);
+                setShowSuccess(true);
+                setTimeout(() => setShowSuccess(false), 3000);
+            } catch (err) {
+                console.error('Error redeeming reward:', err.message);
+                alert('Failed to redeem reward. Please try again.');
+            } finally {
+                setLoading(false);
+            }
         }
     };
 
@@ -51,7 +62,7 @@ const Rewards = ({ user }) => {
                         <p style={{ color: 'var(--text-soft)', fontSize: '0.9rem' }}>Use your hard-earned points to get sustainable rewards</p>
                     </div>
                     <div className="user-points card" style={{ padding: '12px 24px', background: 'var(--bg-color)', border: 'none' }}>
-                        Current Balance: <strong style={{ color: 'var(--primary-dark)', fontSize: '1.25rem' }}>{user.stats.points} pts</strong>
+                        Current Balance: <strong style={{ color: 'var(--primary-dark)', fontSize: '1.25rem' }}>{user.eco_points || 0} pts</strong>
                     </div>
                 </div>
 
@@ -65,11 +76,11 @@ const Rewards = ({ user }) => {
                             <p>{reward.description}</p>
                             <div className="cost-pill">{reward.cost} pts</div>
                             <button
-                                className={`btn-primary auth-btn ${user.stats.points < reward.cost ? 'disabled' : ''}`}
-                                disabled={user.stats.points < reward.cost}
+                                className={`btn-primary auth-btn ${(user.eco_points || 0) < reward.cost ? 'disabled' : ''}`}
+                                disabled={(user.eco_points || 0) < reward.cost || loading}
                                 onClick={() => handleRedeem(reward)}
                             >
-                                {user.stats.points < reward.cost ? 'Insufficient Points' : 'Redeem Now'}
+                                {loading && redeemedItem === reward.title ? 'Processing...' : ((user.eco_points || 0) < reward.cost ? 'Insufficient Points' : 'Redeem Now')}
                             </button>
                         </div>
                     ))}

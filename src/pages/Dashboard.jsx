@@ -1,17 +1,67 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Recycle, MapPin, ArrowRight } from 'lucide-react';
-import { useLiveQuery } from 'dexie-react-hooks';
-import { db } from '../db/db';
 import ImpactSummary from '../components/ImpactSummary';
+import { supabase } from '../lib/supabaseClient';
 
-const Dashboard = ({ user, setActiveTab }) => {
-    const logs = useLiveQuery(() => db.logs.where('userId').equals(user.id).toArray(), [user.id]);
-    const centers = useLiveQuery(() => db.centers.toArray());
+const Dashboard = ({ user, setActiveTab, setSearchQuery }) => {
+    const [recentLogs, setRecentLogs] = useState([]);
+    const [centers, setCenters] = useState([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const fetchDashboardData = async () => {
+            try {
+                setLoading(true);
+                // Fetch in parallel
+                const [logsRes, centersRes] = await Promise.all([
+                    supabase
+                        .from('recycling_logs')
+                        .select('*')
+                        .eq('user_id', user.id)
+                        .order('created_at', { ascending: false })
+                        .limit(4),
+                    supabase
+                        .from('recycling_centers')
+                        .select('*')
+                        .limit(3)
+                ]);
+
+                if (logsRes.error) throw logsRes.error;
+                if (centersRes.error) throw centersRes.error;
+
+                setRecentLogs(logsRes.data);
+                setCenters(centersRes.data);
+            } catch (err) {
+                console.error('Error fetching dashboard data:', err.message);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchDashboardData();
+
+        // Subscribe to real-time updates for logs
+        const channel = supabase
+            .channel('dashboard-logs-ui')
+            .on('postgres_changes', {
+                event: '*',
+                schema: 'public',
+                table: 'recycling_logs',
+                filter: `user_id=eq.${user.id}`
+            }, () => {
+                fetchDashboardData();
+            })
+            .subscribe();
+
+        return () => {
+            supabase.removeChannel(channel);
+        };
+    }, [user.id]);
 
     return (
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="dashboard-content">
-            <ImpactSummary user={user} />
+            <ImpactSummary user={user} onNavigate={setActiveTab} />
 
             <div className="main-grid">
                 <div className="section-card">
@@ -22,17 +72,17 @@ const Dashboard = ({ user, setActiveTab }) => {
                         </button>
                     </div>
                     <div className="activity-list">
-                        {logs?.slice(-4).reverse().map(item => (
+                        {recentLogs?.map(item => (
                             <div key={item.id} className="activity-item">
                                 <div className="activity-icon"><Recycle size={20} /></div>
                                 <div className="activity-info">
                                     <p className="type">{item.type}</p>
-                                    <p className="details">{item.weight} • {item.date}</p>
+                                    <p className="details">{item.weight} • {new Date(item.created_at).toLocaleDateString()}</p>
                                 </div>
                                 <div className="activity-points">{item.points} pts</div>
                             </div>
                         ))}
-                        {(!logs || logs.length === 0) && (
+                        {(!recentLogs || recentLogs.length === 0) && (
                             <div className="empty-state" style={{ padding: '40px 0' }}>
                                 <p className="empty-text">No recycling logs yet. Start today!</p>
                             </div>
@@ -49,7 +99,15 @@ const Dashboard = ({ user, setActiveTab }) => {
                     </div>
                     <div className="centers-list">
                         {centers?.slice(0, 3).map(center => (
-                            <div key={center.id} className="center-item">
+                            <div
+                                key={center.id}
+                                className="center-item"
+                                onClick={() => {
+                                    setSearchQuery(center.name);
+                                    setActiveTab('centers');
+                                }}
+                                style={{ cursor: 'pointer' }}
+                            >
                                 <div className="center-info">
                                     <h4>{center.name}</h4>
                                     <p className="distance"><MapPin size={12} /> {center.distance} away</p>

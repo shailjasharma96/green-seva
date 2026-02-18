@@ -14,7 +14,7 @@
   --grad-primary: linear-gradient(135deg, #10b981 0%, #059669 100%);
   --grad-surface: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
 
-  /* Neutral Colors */
+  /* Neutral Colors (Light Theme Default) */
   --bg-color: #f8fafc;
   --surface: #ffffff;
   --text-main: #1e293b;
@@ -41,6 +41,21 @@
 
   /* Transitions */
   --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+[data-theme='dark'] {
+  --bg-color: #0f172a;
+  --surface: #1e293b;
+  --text-main: #f8fafc;
+  --text-soft: #94a3b8;
+  --text-muted: #64748b;
+  --border-color: #334155;
+  --glass-bg: rgba(15, 23, 42, 0.8);
+  --glass-border: rgba(255, 255, 255, 0.1);
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.3);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.5);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.7);
+  --primary-light: rgba(16, 185, 129, 0.2);
 }
 
 * {
