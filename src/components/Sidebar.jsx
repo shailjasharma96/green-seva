@@ -1,20 +1,22 @@
 import React from 'react';
 import { Leaf, LayoutDashboard, History, MapPin, Award, User, LogOut } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 const Sidebar = ({ activeTab, setActiveTab, user, onLogout }) => {
+    const { t } = useTranslation();
     const menuItems = [
-        { id: 'dashboard', icon: LayoutDashboard, label: 'Dashboard' },
-        { id: 'logs', icon: History, label: 'Recycling Logs' },
-        { id: 'centers', icon: MapPin, label: 'Nearby Centers' },
-        { id: 'rewards', icon: Award, label: 'Rewards' },
-        { id: 'profile', icon: User, label: 'My Profile' },
+        { id: 'dashboard', icon: LayoutDashboard, label: t('common.dashboard') },
+        { id: 'logs', icon: History, label: t('common.recycling_logs') },
+        { id: 'centers', icon: MapPin, label: t('common.nearby_centers') },
+        { id: 'rewards', icon: Award, label: t('common.rewards') },
+        { id: 'profile', icon: User, label: t('common.my_profile') },
     ];
 
     return (
         <aside className="sidebar">
             <div className="sidebar-header">
                 <Leaf size={32} />
-                <span>GreenSeva</span>
+                <span>{t('sidebar.brand_name')}</span>
             </div>
 
             <nav className="sidebar-nav">
@@ -43,7 +45,7 @@ const Sidebar = ({ activeTab, setActiveTab, user, onLogout }) => {
 
                 <button className="nav-item signout-btn" onClick={onLogout}>
                     <LogOut size={20} />
-                    <span>Sign Out</span>
+                    <span>{t('common.sign_out')}</span>
                 </button>
             </div>
         </aside>

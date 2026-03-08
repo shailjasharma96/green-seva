@@ -1,8 +1,11 @@
 import React, { useState } from 'react';
 import { Search, Bell, PlusCircle, CheckCircle, Moon, Sun } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
+import LanguageSwitcher from './LanguageSwitcher';
 
 const Topbar = ({ title, onLogWaste, searchQuery, setSearchQuery, theme, toggleTheme }) => {
+    const { t } = useTranslation();
     const [showNotifications, setShowNotifications] = useState(false);
 
     return (
@@ -11,17 +14,19 @@ const Topbar = ({ title, onLogWaste, searchQuery, setSearchQuery, theme, toggleT
                 <h1>{title}</h1>
             </div>
             <div className="topbar-right">
+                <LanguageSwitcher />
+
                 <div className="search-bar">
                     <Search size={18} />
                     <input
                         type="text"
-                        placeholder="Search logs or centers..."
+                        placeholder={t('topbar.search_placeholder')}
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
                     />
                 </div>
 
-                <button className="icon-btn theme-toggle" onClick={toggleTheme} title="Toggle Dark Mode">
+                <button className="icon-btn theme-toggle" onClick={toggleTheme} title={t('topbar.toggle_theme')}>
                     {theme === 'light' ? <Moon size={20} /> : <Sun size={20} />}
                 </button>
 
@@ -54,14 +59,14 @@ const Topbar = ({ title, onLogWaste, searchQuery, setSearchQuery, theme, toggleT
                                     border: '1px solid #f1f5f9'
                                 }}
                             >
-                                <h4 style={{ marginBottom: '16px', color: '#1e293b', borderBottom: '1px solid #f1f5f9', paddingBottom: '10px' }}>Recent Notifications</h4>
+                                <h4 style={{ marginBottom: '16px', color: '#1e293b', borderBottom: '1px solid #f1f5f9', paddingBottom: '10px' }}>{t('topbar.recent_notifications')}</h4>
                                 <div className="notification-item" style={{ display: 'flex', gap: '12px', marginBottom: '12px' }}>
                                     <div style={{ background: '#ecfdf5', padding: '8px', borderRadius: '50%', display: 'flex' }}>
                                         <CheckCircle size={14} color="#059669" />
                                     </div>
                                     <div>
-                                        <p style={{ fontSize: '0.85rem', fontWeight: '600', color: '#334155' }}>Welcome to GreenSeva!</p>
-                                        <p style={{ fontSize: '0.75rem', color: '#64748b' }}>Start your journey to a cleaner planet today.</p>
+                                        <p style={{ fontSize: '0.85rem', fontWeight: '600', color: '#334155' }}>{t('topbar.notifications.welcome')}</p>
+                                        <p style={{ fontSize: '0.75rem', color: '#64748b' }}>{t('topbar.notifications.welcome_sub')}</p>
                                     </div>
                                 </div>
                                 <div className="notification-item" style={{ display: 'flex', gap: '12px' }}>
@@ -69,8 +74,8 @@ const Topbar = ({ title, onLogWaste, searchQuery, setSearchQuery, theme, toggleT
                                         <PlusCircle size={14} color="#2563eb" />
                                     </div>
                                     <div>
-                                        <p style={{ fontSize: '0.85rem', fontWeight: '600', color: '#334155' }}>Points Earned</p>
-                                        <p style={{ fontSize: '0.75rem', color: '#64748b' }}>You earned 50 points for your first log!</p>
+                                        <p style={{ fontSize: '0.85rem', fontWeight: '600', color: '#334155' }}>{t('topbar.notifications.points_earned')}</p>
+                                        <p style={{ fontSize: '0.75rem', color: '#64748b' }}>{t('topbar.notifications.points_earned_sub')}</p>
                                     </div>
                                 </div>
                             </motion.div>
@@ -80,7 +85,7 @@ const Topbar = ({ title, onLogWaste, searchQuery, setSearchQuery, theme, toggleT
 
                 <button className="log-waste-cta" onClick={onLogWaste}>
                     <PlusCircle size={20} />
-                    <span>Log Waste</span>
+                    <span>{t('topbar.log_waste')}</span>
                 </button>
             </div>
         </header>

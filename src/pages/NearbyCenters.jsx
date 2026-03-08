@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 import { supabase } from '../lib/supabaseClient';
 import { MapPin, Search, Loader2 } from 'lucide-react';
 
 const NearbyCenters = ({ searchQuery }) => {
+    const { t } = useTranslation();
     const [centers, setCenters] = useState([]);
     const [loading, setLoading] = useState(true);
 
@@ -14,7 +16,6 @@ const NearbyCenters = ({ searchQuery }) => {
                 let query = supabase.from('recycling_centers').select('*');
 
                 if (searchQuery) {
-                    // Filter in JS for complex array logic if needed, or use .contains() for Postgres arrays
                     query = query.or(`name.ilike.%${searchQuery}%`);
                 }
 
@@ -40,17 +41,26 @@ const NearbyCenters = ({ searchQuery }) => {
         fetchCenters();
     }, [searchQuery]);
 
+    const getStatusTranslation = (status) => {
+        const s = status.toLowerCase();
+        if (s === 'open') return t('centers.status_open');
+        if (s === 'closed') return t('centers.status_closed');
+        if (s === 'closing soon') return t('centers.status_closing');
+        return status;
+    };
+
     return (
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="centers-page">
             <div className="section-card">
                 <div className="section-header">
-                    <h2>Collection Centers Near You</h2>
+                    <h2>{t('centers.title')}</h2>
+                    {searchQuery && <p style={{ fontSize: '0.9rem', color: 'var(--text-soft)' }}>{t('centers.search_results', { query: searchQuery })}</p>}
                 </div>
                 <div className="centers-list">
                     {loading ? (
                         <div className="loading-state">
                             <Loader2 className="spinner" size={32} />
-                            <p>Loading centers...</p>
+                            <p>{t('centers.loading')}</p>
                         </div>
                     ) : (
                         <>
@@ -58,20 +68,22 @@ const NearbyCenters = ({ searchQuery }) => {
                                 <div key={center.id} className="center-item">
                                     <div className="center-info">
                                         <h4>{center.name}</h4>
-                                        <p className="distance"><MapPin size={12} /> {center.distance} away</p>
+                                        <p className="distance"><MapPin size={12} /> {t('centers.away', { distance: center.distance })}</p>
                                         <div className="tags">
                                             {center.types.map(t => (
                                                 <span key={t} className="tag">{t}</span>
                                             ))}
                                         </div>
                                     </div>
-                                    <div className={`status ${center.status.toLowerCase().replace(' ', '-')}`}>{center.status}</div>
+                                    <div className={`status ${center.status.toLowerCase().replace(' ', '-')}`}>
+                                        {getStatusTranslation(center.status)}
+                                    </div>
                                 </div>
                             ))}
                             {(!centers || centers.length === 0) && (
                                 <div className="empty-state">
                                     <Search size={48} />
-                                    <p>No centers found matching your search.</p>
+                                    <p>{t('centers.no_centers_found')}</p>
                                 </div>
                             )}
                         </>

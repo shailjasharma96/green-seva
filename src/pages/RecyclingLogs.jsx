@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 import { supabase } from '../lib/supabaseClient';
 import { History, Recycle, Trash2, Loader2 } from 'lucide-react';
 
 const RecyclingLogs = ({ user, searchQuery }) => {
+    const { t } = useTranslation();
     const [logs, setLogs] = useState([]);
     const [loading, setLoading] = useState(true);
 
@@ -52,7 +54,7 @@ const RecyclingLogs = ({ user, searchQuery }) => {
     };
 
     const handleDelete = async (id) => {
-        if (window.confirm('Are you sure you want to delete this log?')) {
+        if (window.confirm(t('logs.delete_confirm'))) {
             try {
                 const { error } = await supabase
                     .from('recycling_logs')
@@ -70,13 +72,13 @@ const RecyclingLogs = ({ user, searchQuery }) => {
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="logs-page">
             <div className="section-card">
                 <div className="section-header">
-                    <h2>All Impact Logs</h2>
+                    <h2>{t('logs.title')}</h2>
                 </div>
                 <div className="activity-list">
                     {loading ? (
                         <div className="loading-state">
                             <Loader2 className="spinner" size={32} />
-                            <p>Fetching your impact logs...</p>
+                            <p>{t('logs.fetching')}</p>
                         </div>
                     ) : (
                         <>
@@ -85,13 +87,13 @@ const RecyclingLogs = ({ user, searchQuery }) => {
                                     <div className="activity-icon"><Recycle size={18} /></div>
                                     <div className="activity-info">
                                         <p className="type">{item.type}</p>
-                                        <p className="details">{item.weight} • {item.date}</p>
+                                        <p className="details">{item.weight} • {new Date(item.created_at).toLocaleDateString()}</p>
                                     </div>
-                                    <div className="activity-points">{item.points} pts</div>
+                                    <div className="activity-points">{item.points} {t('common.pts')}</div>
                                     <button
                                         className="delete-btn"
                                         onClick={() => handleDelete(item.id)}
-                                        title="Delete log"
+                                        title={t('logs.delete_tooltip')}
                                     >
                                         <Trash2 size={16} />
                                     </button>
@@ -100,7 +102,7 @@ const RecyclingLogs = ({ user, searchQuery }) => {
                             {(!logs || logs.length === 0) && (
                                 <div className="empty-state">
                                     <History size={48} />
-                                    <p>{searchQuery ? 'No results found for your search.' : 'No logs found. Start recycling to see your impact here!'}</p>
+                                    <p>{searchQuery ? t('logs.no_results') : t('logs.no_logs')}</p>
                                 </div>
                             )}
                         </>
