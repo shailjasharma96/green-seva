@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { AnimatePresence } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 import { supabase } from './lib/supabaseClient';
 
 // Components
@@ -74,7 +75,7 @@ const App = () => {
           .from('profiles')
           .insert({
             id: userId,
-            name: user.user_metadata?.name || 'Green Seva User',
+            name: user.user_metadata?.name || t('profile.default_user_name'),
             email: user.email,
             eco_points: 0,
             total_weight: 0
@@ -94,7 +95,7 @@ const App = () => {
       // If we can't get or create a profile, we might still want to let them in
       // but with a shell profile so the app doesn't hang
       if (!profile) {
-        setProfile({ id: userId, name: 'Eco User', email: '', eco_points: 0, total_weight: 0 });
+        setProfile({ id: userId, name: t('profile.eco_user_name'), email: '', eco_points: 0, total_weight: 0 });
       }
     } finally {
       setLoading(false);
@@ -110,6 +111,8 @@ const App = () => {
     });
   };
 
+  const { t } = useTranslation();
+
   const handleLogout = async () => {
     await supabase.auth.signOut();
     setActiveTab('dashboard');
@@ -117,24 +120,24 @@ const App = () => {
 
   const getTitle = () => {
     const titles = {
-      dashboard: 'Dashboard Overview',
-      logs: 'Recycling Logs',
-      centers: 'Nearby Centers',
-      rewards: 'My Rewards',
-      profile: 'User Profile',
+      dashboard: t('topbar.dashboard_overview'),
+      logs: t('topbar.recycling_logs_title'),
+      centers: t('topbar.nearby_centers_title'),
+      rewards: t('topbar.my_rewards_title'),
+      profile: t('topbar.user_profile_title'),
     };
-    return titles[activeTab] || 'Overview';
+    return titles[activeTab] || t('common.overview');
   };
 
   if (!supabase) return (
     <div className="loading" style={{ color: 'var(--error)' }}>
-      <h3>Configuration Error</h3>
-      <p>Supabase URL or Key is missing in your .env file.</p>
+      <h3>{t('common.configuration_error')}</h3>
+      <p>{t('common.supabase_error')}</p>
     </div>
   );
   if (!session) return <Auth onLogin={handleLogin} />;
-  if (loading) return <div className="loading">Loading your green profile...</div>;
-  if (!profile) return <div className="loading">Initializing profile...</div>;
+  if (loading) return <div className="loading">{t('common.loading')}</div>;
+  if (!profile) return <div className="loading">{t('common.initializing_profile')}</div>;
 
   const renderContent = () => {
     switch (activeTab) {

@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Camera, Edit2, Check, X } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { supabase } from '../lib/supabaseClient';
 
 const UserProfile = ({ user, onNavigate }) => {
+    const { t } = useTranslation();
     const [isEditing, setIsEditing] = useState(false);
     const [formData, setFormData] = useState(user);
     const [loading, setLoading] = useState(false);
@@ -22,7 +24,7 @@ const UserProfile = ({ user, onNavigate }) => {
             setIsEditing(false);
         } catch (err) {
             console.error('Error updating profile:', err.message);
-            alert('Failed to update profile.');
+            alert(t('profile.update_failed'));
         } finally {
             setLoading(false);
         }
@@ -46,7 +48,7 @@ const UserProfile = ({ user, onNavigate }) => {
                         </div>
                         {!isEditing && (
                             <button className="btn-primary" style={{ background: 'var(--bg-color)', color: 'var(--text-main)', border: '1px solid var(--border-color)' }} onClick={() => setIsEditing(true)}>
-                                <Edit2 size={16} /> Edit Profile
+                                <Edit2 size={16} /> {t('profile.edit_profile')}
                             </button>
                         )}
                     </div>
@@ -55,38 +57,38 @@ const UserProfile = ({ user, onNavigate }) => {
 
             {isEditing ? (
                 <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="section-card card">
-                    <h3 style={{ marginBottom: '24px' }}>Update Profile Information</h3>
+                    <h3 style={{ marginBottom: '24px' }}>{t('profile.update_info')}</h3>
                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px', marginBottom: '32px' }}>
                         <div className="input-group">
-                            <label>Full Name</label>
+                            <label>{t('auth.full_name')}</label>
                             <input type="text" value={formData.name} onChange={(e) => setFormData({ ...formData, name: e.target.value })} />
                         </div>
                         <div className="input-group">
-                            <label>Email Address</label>
+                            <label>{t('auth.email_label')}</label>
                             <input type="email" value={formData.email} onChange={(e) => setFormData({ ...formData, email: e.target.value })} />
                         </div>
                     </div>
                     <div className="form-actions">
                         <button className="text-btn" style={{ color: 'var(--text-soft)' }} onClick={() => setIsEditing(false)}>
-                            <X size={18} /> Cancel
+                            <X size={18} /> {t('common.cancel')}
                         </button>
                         <button className="btn-primary" onClick={handleSave} disabled={loading}>
-                            {loading ? 'Saving...' : <><Check size={18} /> Save Changes</>}
+                            {loading ? t('common.saving') : <><Check size={18} /> {t('profile.save_changes')}</>}
                         </button>
                     </div>
                 </motion.div>
             ) : (
                 <div className="stat-group">
                     <div className="card stat-card" onClick={() => onNavigate?.('logs')} style={{ cursor: 'pointer' }}>
-                        <p className="label">Total Recycled</p>
-                        <p className="value">{user.total_weight || 0}kg</p>
+                        <p className="label">{t('dashboard.total_weight')}</p>
+                        <p className="value">{user.total_weight || 0}{t('common.kg')}</p>
                     </div>
                     <div className="card stat-card" onClick={() => onNavigate?.('rewards')} style={{ cursor: 'pointer' }}>
-                        <p className="label">Impact Points</p>
+                        <p className="label">{t('dashboard.eco_points')}</p>
                         <p className="value">{user.eco_points || 0}</p>
                     </div>
                     <div className="card stat-card" onClick={() => onNavigate?.('dashboard')} style={{ cursor: 'pointer' }}>
-                        <p className="label">Monthly Rank</p>
+                        <p className="label">{t('profile.monthly_rank')}</p>
                         <p className="value">#{Math.floor(Math.random() * 100) + 1}</p>
                     </div>
                 </div>

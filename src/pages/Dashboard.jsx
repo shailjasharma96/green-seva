@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Recycle, MapPin, ArrowRight } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import ImpactSummary from '../components/ImpactSummary';
 import { supabase } from '../lib/supabaseClient';
 
 const Dashboard = ({ user, setActiveTab, setSearchQuery }) => {
+    const { t } = useTranslation();
     const [recentLogs, setRecentLogs] = useState([]);
     const [centers, setCenters] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -61,14 +63,17 @@ const Dashboard = ({ user, setActiveTab, setSearchQuery }) => {
 
     return (
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="dashboard-content">
+            <h2 style={{ marginBottom: '24px', fontWeight: '800', fontSize: '1.75rem' }}>
+                {t('dashboard.welcome', { name: user.name.split(' ')[0] })}
+            </h2>
             <ImpactSummary user={user} onNavigate={setActiveTab} />
 
             <div className="main-grid">
                 <div className="section-card">
                     <div className="section-header">
-                        <h2>Recent Activity</h2>
+                        <h2>{t('dashboard.recent_activity')}</h2>
                         <button className="btn-primary btn-sm" onClick={() => setActiveTab('logs')}>
-                            View All <ArrowRight size={14} />
+                            {t('dashboard.view_all')} <ArrowRight size={14} />
                         </button>
                     </div>
                     <div className="activity-list">
@@ -79,12 +84,12 @@ const Dashboard = ({ user, setActiveTab, setSearchQuery }) => {
                                     <p className="type">{item.type}</p>
                                     <p className="details">{item.weight} • {new Date(item.created_at).toLocaleDateString()}</p>
                                 </div>
-                                <div className="activity-points">{item.points} pts</div>
+                                <div className="activity-points">{item.points} {t('common.pts')}</div>
                             </div>
                         ))}
                         {(!recentLogs || recentLogs.length === 0) && (
                             <div className="empty-state" style={{ padding: '40px 0' }}>
-                                <p className="empty-text">No recycling logs yet. Start today!</p>
+                                <p className="empty-text">{t('dashboard.no_activity')}</p>
                             </div>
                         )}
                     </div>
@@ -92,9 +97,9 @@ const Dashboard = ({ user, setActiveTab, setSearchQuery }) => {
 
                 <div className="section-card">
                     <div className="section-header">
-                        <h2>Nearby Centers</h2>
+                        <h2>{t('common.nearby_centers')}</h2>
                         <button className="text-btn" onClick={() => setActiveTab('centers')}>
-                            View map <ArrowRight size={14} style={{ verticalAlign: 'middle' }} />
+                            {t('dashboard.view_map')} <ArrowRight size={14} style={{ verticalAlign: 'middle' }} />
                         </button>
                     </div>
                     <div className="centers-list">
@@ -110,7 +115,7 @@ const Dashboard = ({ user, setActiveTab, setSearchQuery }) => {
                             >
                                 <div className="center-info">
                                     <h4>{center.name}</h4>
-                                    <p className="distance"><MapPin size={12} /> {center.distance} away</p>
+                                    <p className="distance"><MapPin size={12} /> {t('centers.away', { distance: center.distance })}</p>
                                     <div className="tags">
                                         {center.types.map(t => <span key={t} className="tag">{t}</span>)}
                                     </div>

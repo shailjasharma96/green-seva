@@ -1,17 +1,19 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Award, Zap, Gift, CheckCircle } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { supabase } from '../lib/supabaseClient';
 
 const Rewards = ({ user }) => {
+    const { t } = useTranslation();
     const [showSuccess, setShowSuccess] = useState(false);
     const [redeemedItem, setRedeemedItem] = useState('');
     const [loading, setLoading] = useState(false);
 
     const rewards = [
-        { id: 1, title: 'Eco Starter', cost: 500, icon: Gift, description: 'Basic eco-friendly kit for your sustainable home' },
-        { id: 2, title: 'Energy Booster', cost: 1200, icon: Zap, description: 'Compact solar power bank for your devices' },
-        { id: 3, title: 'Green Master', cost: 5000, icon: Award, description: 'Premium bag made from 100% recycled materials' },
+        { id: 1, title: t('rewards.items.eco_starter.title'), cost: 500, icon: Gift, description: t('rewards.items.eco_starter.desc') },
+        { id: 2, title: t('rewards.items.energy_booster.title'), cost: 1200, icon: Zap, description: t('rewards.items.energy_booster.desc') },
+        { id: 3, title: t('rewards.items.green_master.title'), cost: 5000, icon: Award, description: t('rewards.items.green_master.desc') },
     ];
 
     const handleRedeem = async (reward) => {
@@ -32,7 +34,7 @@ const Rewards = ({ user }) => {
                 setTimeout(() => setShowSuccess(false), 3000);
             } catch (err) {
                 console.error('Error redeeming reward:', err.message);
-                alert('Failed to redeem reward. Please try again.');
+                alert(t('rewards.redeem_failed'));
             } finally {
                 setLoading(false);
             }
@@ -50,7 +52,7 @@ const Rewards = ({ user }) => {
                         className="success-toast"
                     >
                         <CheckCircle size={20} />
-                        <span>Successfully redeemed {redeemedItem}! Check your email.</span>
+                        <span>{t('rewards.redeem_success', { item: redeemedItem })}</span>
                     </motion.div>
                 )}
             </AnimatePresence>
@@ -58,11 +60,11 @@ const Rewards = ({ user }) => {
             <div className="section-card">
                 <div className="section-header">
                     <div>
-                        <h2>Redeem Your Eco Points</h2>
-                        <p style={{ color: 'var(--text-soft)', fontSize: '0.9rem' }}>Use your hard-earned points to get sustainable rewards</p>
+                        <h2>{t('rewards.redeem_points')}</h2>
+                        <p style={{ color: 'var(--text-soft)', fontSize: '0.9rem' }}>{t('rewards.redeem_subtitle')}</p>
                     </div>
                     <div className="user-points card" style={{ padding: '12px 24px', background: 'var(--bg-color)', border: 'none' }}>
-                        Current Balance: <strong style={{ color: 'var(--primary-dark)', fontSize: '1.25rem' }}>{user.eco_points || 0} pts</strong>
+                        {t('rewards.current_balance')}: <strong style={{ color: 'var(--primary-dark)', fontSize: '1.25rem' }}>{user.eco_points || 0} {t('common.pts')}</strong>
                     </div>
                 </div>
 
@@ -74,13 +76,13 @@ const Rewards = ({ user }) => {
                             </div>
                             <h3>{reward.title}</h3>
                             <p>{reward.description}</p>
-                            <div className="cost-pill">{reward.cost} pts</div>
+                            <div className="cost-pill">{reward.cost} {t('common.pts')}</div>
                             <button
                                 className={`btn-primary auth-btn ${(user.eco_points || 0) < reward.cost ? 'disabled' : ''}`}
                                 disabled={(user.eco_points || 0) < reward.cost || loading}
                                 onClick={() => handleRedeem(reward)}
                             >
-                                {loading && redeemedItem === reward.title ? 'Processing...' : ((user.eco_points || 0) < reward.cost ? 'Insufficient Points' : 'Redeem Now')}
+                                {loading && redeemedItem === reward.title ? t('common.processing') : ((user.eco_points || 0) < reward.cost ? t('rewards.insufficient_points') : t('rewards.redeem_now'))}
                             </button>
                         </div>
                     ))}

@@ -1,0 +1,157 @@
+{
+    "common": {
+        "dashboard": "डैशबोर्ड",
+        "recycling_logs": "रीसाइक्लिंग लॉग",
+        "nearby_centers": "नजदीकी केंद्र",
+        "rewards": "पुरस्कार",
+        "my_profile": "मेरी प्रोफाइल",
+        "sign_out": "साइन आउट",
+        "loading": "प्रोफ़ाइल लोड हो रही है...",
+        "initializing_profile": "प्रोफ़ाइल शुरू की जा रही है...",
+        "configuration_error": "कॉन्फ़िगरेशन त्रुटि",
+        "supabase_error": "आपके .env फ़ाइल में Supabase URL या Key गायब है।",
+        "pts": "अंक",
+        "kg": "किग्रा",
+        "cancel": "रद्द करें",
+        "saving": "सहेजा जा रहा है...",
+        "processing": "प्रक्रिया जारी है...",
+        "error_occurred": "एक त्रुटि हुई।",
+        "overview": "अवलोकन"
+    },
+    "sidebar": {
+        "brand_name": "ग्रीन सेवा"
+    },
+    "topbar": {
+        "dashboard_overview": "डैशबोर्ड अवलोकन",
+        "recycling_logs_title": "रीसाइक्लिंग लॉग",
+        "nearby_centers_title": "नजदीकी केंद्र",
+        "my_rewards_title": "मेरे पुरस्कार",
+        "user_profile_title": "उपयोगकर्ता प्रोफ़ाइल",
+        "log_waste": "कचरा दर्ज करें",
+        "search_placeholder": "खोजें...",
+        "toggle_theme": "थीम बदलें",
+        "recent_notifications": "हाल की सूचनाएं",
+        "notifications": {
+            "welcome": "ग्रीन सेवा में आपका स्वागत है!",
+            "welcome_sub": "आज ही एक स्वच्छ ग्रह के लिए अपनी यात्रा शुरू करें।",
+            "points_earned": "अंक अर्जित किए",
+            "points_earned_sub": "आपने अपने पहले लॉग के लिए 50 अंक अर्जित किए!"
+        }
+    },
+    "dashboard": {
+        "welcome": "वापसी पर आपका स्वागत है, {{name}}!",
+        "impact_summary": "आपका प्रभाव सारांश",
+        "total_weight": "कुल पुनर्चक्रित",
+        "eco_points": "इको अंक",
+        "level": "स्तर",
+        "recent_activity": "हाल की गतिविधि",
+        "no_activity": "अभी तक कोई रीसाइक्लिंग गतिविधि नहीं है। आज ही अपनी यात्रा शुरू करें!",
+        "environmental_impact": "पर्यावरणीय प्रभाव",
+        "trees_saved": "बचाए गए पेड़",
+        "water_saved": "बचाया गया पानी",
+        "co2_offset": "CO2 ऑफसेट",
+        "view_all": "सभी देखें",
+        "view_map": "नक्शा देखें"
+    },
+    "auth": {
+        "title": "ग्रीन सेवा में आपका स्वागत है",
+        "subtitle": "दुनिया को हरा-भरा बनाने के लिए हमारे समुदाय में शामिल हों, एक समय में एक कचरा।",
+        "email_label": "ईमेल पता",
+        "password_label": "पासवर्ड",
+        "email_placeholder": "email@example.com",
+        "name_placeholder": "जॉन डो",
+        "sign_in": "साइन इन करें",
+        "sign_up": "साइन अप करें",
+        "create_account": "खाता बनाएं",
+        "full_name": "पूरा नाम",
+        "remember_me": "मुझे याद रखें",
+        "forgot_password": "पासवर्ड भूल गए?",
+        "reset_password": "पासवर्ड रीसेट करें",
+        "welcome_back": "वापसी पर स्वागत है",
+        "join_green_seva": "ग्रीन सेवा में शामिल हों",
+        "enter_email_reset": "रीसेट लिंक प्राप्त करने के लिए अपना ईमेल दर्ज करें",
+        "login_track_impact": "अपने प्रभाव को ट्रैक करने के लिए लॉगिन करें",
+        "start_journey": "एक स्वच्छ ग्रह के लिए अपनी यात्रा शुरू करें",
+        "back_to_login": "लॉगिन पर वापस जाएं",
+        "send_reset_link": "रीसेट लिंक भेजें",
+        "processing": "प्रक्रिया जारी है...",
+        "reset_link_sent": "आपकी ईमेल पर एक पासवर्ड रीसेट लिंक भेजा गया है।",
+        "registration_success": "पंजीकरण सफल! अपने खाते को सत्यापित करने के लिए कृपया अपनी ईमेल जाँचें।",
+        "no_account": "खाता नहीं है?",
+        "already_have_account": "पहले से ही एक खाता है?",
+        "success_login": "सफलतापूर्वक साइन इन किया!",
+        "success_signup": "सफलतापूर्वक साइन अप किया! अब आप साइन इन कर सकते हैं।",
+        "error_login": "साइन इन करने में त्रुटि",
+        "error_signup": "साइन अप करने में त्रुटि"
+    },
+    "logs": {
+        "title": "सभी प्रभाव लॉग",
+        "fetching": "आपके प्रभाव लॉग प्राप्त किए जा रहे हैं...",
+        "delete_confirm": "क्या आप वाकई इस लॉग को हटाना चाहते हैं?",
+        "no_results": "आपकी खोज के लिए कोई परिणाम नहीं मिले।",
+        "no_logs": "कोई लॉग नहीं मिला। अपना प्रभाव यहाँ देखने के लिए रीसाइक्लिंग शुरू करें!",
+        "delete_tooltip": "लॉग हटाएं"
+    },
+    "centers": {
+        "title": "नजदीकी रीसाइक्लिंग केंद्र",
+        "search_results": "'{{query}}' के लिए परिणाम दिखाए जा रहे हैं",
+        "away": "{{distance}} दूर",
+        "status_open": "खुला है",
+        "status_closed": "बंद है",
+        "status_closing": "जल्द ही बंद हो जाएगा",
+        "loading": "केंद्र लोड हो रहे हैं...",
+        "no_centers_found": "आपकी खोज से मेल खाने वाले कोई केंद्र नहीं मिले।"
+    },
+    "profile": {
+        "edit_profile": "प्रोफ़ाइल संपादित करें",
+        "update_info": "प्रोफ़ाइल जानकारी अपडेट करें",
+        "save_changes": "परिवर्तन सहेजें",
+        "monthly_rank": "मासिक रैंक",
+        "update_failed": "प्रोफ़ाइल अपडेट करने में विफल।",
+        "impact_tokens": "प्रभाव टोकन",
+        "default_user_name": "ग्रीन सेवा उपयोगकर्ता",
+        "eco_user_name": "इको उपयोगकर्ता"
+    },
+    "rewards": {
+        "redeem_points": "अपने इको अंक भुनाएं",
+        "redeem_subtitle": "स्थायी पुरस्कार पाने के लिए अपने मेहनत से कमाए गए अंकों का उपयोग करें",
+        "current_balance": "वर्तमान शेष",
+        "insufficient_points": "अपर्याप्त अंक",
+        "redeem_now": "अभी भुनाएं",
+        "redeem_success": "सफलतापूर्वक {{item}} भुनाया गया! अपनी ईमेल देखें।",
+        "redeem_failed": "पुरस्कार भुनाने में विफल। कृपया पुन: प्रयास करें।",
+        "items": {
+            "eco_starter": {
+                "title": "इको स्टार्टर",
+                "desc": "आपके स्थायी घर के लिए बुनियादी इको-फ्रेंडली किट"
+            },
+            "energy_booster": {
+                "title": "एनर्जी बूस्टर",
+                "desc": "आपके उपकरणों के लिए कॉम्पैक्ट सोलर पावर बैंक"
+            },
+            "green_master": {
+                "title": "ग्रीन मास्टर",
+                "desc": "100% पुनर्चक्रित सामग्री से बना प्रीमियम बैग"
+            }
+        }
+    },
+    "modal": {
+        "log_waste_title": "नया कचरा दर्ज करें",
+        "material_type": "सामग्री प्रकार",
+        "weight_kg": "वजन (किग्रा)",
+        "log_impact": "प्रभाव दर्ज करें",
+        "logging": "दर्ज किया जा रहा है...",
+        "failed": "कचरा दर्ज करने में विफल। कृपया पुन: प्रयास करें।",
+        "materials": {
+            "plastic": "प्लास्टिक",
+            "paper": "कागज",
+            "glass": "कांच",
+            "metal": "धातु",
+            "ewaste": "ई-कचरा"
+        }
+    },
+    "languages": {
+        "en": "English",
+        "hi": "हिंदी"
+    }
+}
