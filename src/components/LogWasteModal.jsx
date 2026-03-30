@@ -3,8 +3,10 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { supabase } from '../lib/supabaseClient';
 import { Camera, Sparkles, Loader2, X, Check } from 'lucide-react';
 import { identifyMaterial } from '../lib/gemini';
+import { useUsageTracker } from '../context/UsageContext';
 
 const LogWasteModal = ({ user, onClose, onSuccess }) => {
+    const { trackImageScan } = useUsageTracker();
     const [type, setType] = useState('Plastic');
     const [weight, setWeight] = useState('');
     const [loading, setLoading] = useState(false);
@@ -60,6 +62,7 @@ const LogWasteModal = ({ user, onClose, onSuccess }) => {
             const reader = new FileReader();
             reader.onloadend = async () => {
                 const base64 = reader.result;
+                trackImageScan();
                 const result = await identifyMaterial(base64);
 
                 setAiResult(result);
@@ -69,6 +72,10 @@ const LogWasteModal = ({ user, onClose, onSuccess }) => {
                     if (validTypes.includes(result.type)) {
                         setType(result.type);
                     }
+                }
+
+                if (result.estimated_weight_kg) {
+                    setWeight(result.estimated_weight_kg.toString());
                 }
                 setIsScanning(false);
             };

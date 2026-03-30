@@ -1,13 +1,14 @@
-import React from 'react';
-import { Leaf, LayoutDashboard, History, MapPin, Award, User, LogOut } from 'lucide-react';
+import { Leaf, LayoutDashboard, History, MapPin, Award, User, LogOut, Activity, Truck } from 'lucide-react';
 
 const Sidebar = ({ activeTab, setActiveTab, user, onLogout }) => {
     const menuItems = [
         { id: 'dashboard', icon: LayoutDashboard, label: 'Dashboard' },
         { id: 'logs', icon: History, label: 'Recycling Logs' },
         { id: 'centers', icon: MapPin, label: 'Nearby Centers' },
+        { id: 'pickups', icon: Truck, label: 'Schedule Pickups' },
         { id: 'rewards', icon: Award, label: 'Rewards' },
         { id: 'profile', icon: User, label: 'My Profile' },
+        { id: 'health', icon: Activity, label: 'System Health' },
     ];
 
     return (
@@ -37,7 +38,6 @@ const Sidebar = ({ activeTab, setActiveTab, user, onLogout }) => {
                     </div>
                     <div className="user-info">
                         <p className="name">{user.name}</p>
-                        <p className="email">{user.email}</p>
                     </div>
                 </div>
 

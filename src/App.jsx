@@ -6,6 +6,7 @@ import { supabase } from './lib/supabaseClient';
 import Sidebar from './components/Sidebar';
 import Topbar from './components/Topbar';
 import LogWasteModal from './components/LogWasteModal';
+import AIAssistant from './components/AIAssistant';
 
 // Pages
 import Auth from './pages/Auth';
@@ -14,6 +15,8 @@ import UserProfile from './pages/UserProfile';
 import RecyclingLogs from './pages/RecyclingLogs';
 import NearbyCenters from './pages/NearbyCenters';
 import Rewards from './pages/Rewards';
+import PickingUp from './pages/Pickups';
+import SystemHealth from './pages/SystemHealth';
 
 import './App.css';
 
@@ -25,6 +28,28 @@ const App = () => {
   const [isLogModalOpen, setIsLogModalOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [theme, setTheme] = useState(localStorage.getItem('gs_theme') || 'light');
+
+  useEffect(() => {
+    if (!supabase) return;
+    // 1. Check current session
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session);
+      if (session) fetchProfile(session.user.id);
+      else setLoading(false);
+    });
+
+    // 2. Listen for auth changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setSession(session);
+      if (session) fetchProfile(session.user.id);
+      else {
+        setProfile(null);
+        setLoading(false);
+      }
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
 
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme);
@@ -102,16 +127,16 @@ const App = () => {
   };
 
   const handleLogin = (user) => {
-    // This is called after successful Auth.jsx login
-    // Session state will be updated by onAuthStateChange listener
-    // We just need to make sure session is set
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
+      if (session) fetchProfile(session.user.id);
     });
   };
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
+    setSession(null);
+    setProfile(null);
     setActiveTab('dashboard');
   };
 
@@ -122,19 +147,15 @@ const App = () => {
       centers: 'Nearby Centers',
       rewards: 'My Rewards',
       profile: 'User Profile',
+      health: 'System Health',
+      pickups: 'Schedule Pickups',
     };
     return titles[activeTab] || 'Overview';
   };
 
-  if (!supabase) return (
-    <div className="loading" style={{ color: 'var(--error)' }}>
-      <h3>Configuration Error</h3>
-      <p>Supabase URL or Key is missing in your .env file.</p>
-    </div>
-  );
+  if (loading) return <div className="loading">Initializing Green Seva...</div>;
   if (!session) return <Auth onLogin={handleLogin} />;
-  if (loading) return <div className="loading">Loading your green profile...</div>;
-  if (!profile) return <div className="loading">Initializing profile...</div>;
+  if (!profile) return <div className="loading">Completing profile setup...</div>;
 
   const renderContent = () => {
     switch (activeTab) {
@@ -147,7 +168,9 @@ const App = () => {
       case 'profile': return <UserProfile user={profile} onNavigate={setActiveTab} />;
       case 'logs': return <RecyclingLogs user={profile} searchQuery={searchQuery} />;
       case 'centers': return <NearbyCenters searchQuery={searchQuery} />;
+      case 'pickups': return <PickingUp user={profile} />;
       case 'rewards': return <Rewards user={profile} />;
+      case 'health': return <SystemHealth />;
       default:
         return <Dashboard
           user={profile}
@@ -184,6 +207,7 @@ const App = () => {
           onSuccess={() => fetchProfile(session.user.id)}
         />
       )}
+      <AIAssistant />
     </div>
   );
 };

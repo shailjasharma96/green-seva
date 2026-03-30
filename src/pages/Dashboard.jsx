@@ -121,6 +121,15 @@ const Dashboard = ({ user, setActiveTab, setSearchQuery }) => {
                     </div>
                 </div>
             </div>
+            <div className="section-card pickup-cta" style={{ marginTop: '24px', background: 'var(--grad-primary)', color: 'white', padding: '24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                <div>
+                    <h3 style={{ marginBottom: '8px', color: 'white' }}>Have heavy items to recycle?</h3>
+                    <p style={{ opacity: 0.9 }}>Schedule a doorstep collection for large amounts or E-Waste.</p>
+                </div>
+                <button className="btn-primary" style={{ background: 'white', color: 'var(--primary)' }} onClick={() => setActiveTab('pickups')}>
+                    Book a Pickup
+                </button>
+            </div>
         </motion.div>
     );
 };
