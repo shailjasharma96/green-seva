@@ -4,7 +4,7 @@ import { Recycle, MapPin, ArrowRight } from 'lucide-react';
 import ImpactSummary from '../components/ImpactSummary';
 import { supabase } from '../lib/supabaseClient';
 
-const Dashboard = ({ user, setActiveTab, setSearchQuery }) => {
+const Dashboard = ({ user, setActiveTab, setSearchQuery, searchQuery }) => {
     const [recentLogs, setRecentLogs] = useState([]);
     const [centers, setCenters] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -13,18 +13,28 @@ const Dashboard = ({ user, setActiveTab, setSearchQuery }) => {
         const fetchDashboardData = async () => {
             try {
                 setLoading(true);
+                // Building the queries with search if applicable
+                let logsQuery = supabase
+                    .from('recycling_logs')
+                    .select('*')
+                    .eq('user_id', user.id)
+                    .order('created_at', { ascending: false })
+                    .limit(4);
+
+                let centersQuery = supabase
+                    .from('recycling_centers')
+                    .select('*')
+                    .limit(3);
+
+                if (searchQuery) {
+                    logsQuery = logsQuery.or(`type.ilike.%${searchQuery}%,weight.ilike.%${searchQuery}%`);
+                    centersQuery = centersQuery.or(`name.ilike.%${searchQuery}%,status.ilike.%${searchQuery}%`);
+                }
+
                 // Fetch in parallel
                 const [logsRes, centersRes] = await Promise.all([
-                    supabase
-                        .from('recycling_logs')
-                        .select('*')
-                        .eq('user_id', user.id)
-                        .order('created_at', { ascending: false })
-                        .limit(4),
-                    supabase
-                        .from('recycling_centers')
-                        .select('*')
-                        .limit(3)
+                    logsQuery,
+                    centersQuery
                 ]);
 
                 if (logsRes.error) throw logsRes.error;
@@ -57,7 +67,7 @@ const Dashboard = ({ user, setActiveTab, setSearchQuery }) => {
         return () => {
             supabase.removeChannel(channel);
         };
-    }, [user.id]);
+    }, [user.id, searchQuery]);
 
     return (
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="dashboard-content">

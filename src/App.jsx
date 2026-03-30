@@ -164,6 +164,7 @@ const App = () => {
           user={profile}
           setActiveTab={setActiveTab}
           setSearchQuery={setSearchQuery}
+          searchQuery={searchQuery}
         />;
       case 'profile': return <UserProfile user={profile} onNavigate={setActiveTab} />;
       case 'logs': return <RecyclingLogs user={profile} searchQuery={searchQuery} />;
@@ -176,6 +177,7 @@ const App = () => {
           user={profile}
           setActiveTab={setActiveTab}
           setSearchQuery={setSearchQuery}
+          searchQuery={searchQuery}
         />;
     }
   };

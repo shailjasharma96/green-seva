@@ -43,7 +43,17 @@ const RecyclingLogs = ({ user, searchQuery }) => {
 
             const { data, error } = await query;
             if (error) throw error;
-            setLogs(data);
+
+            let filteredData = data;
+            if (searchQuery) {
+                const searchLower = searchQuery.toLowerCase();
+                filteredData = data.filter(log =>
+                    log.type.toLowerCase().includes(searchLower) ||
+                    log.weight.toLowerCase().includes(searchLower)
+                );
+            }
+
+            setLogs(filteredData);
         } catch (err) {
             console.error('Error fetching logs:', err.message);
         } finally {
